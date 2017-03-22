@@ -10,6 +10,5 @@ app = Flask(__name__)
 def root():
     return render_template('poll.html')
 
-
 if __name__ == "__main__":
     app.run()
