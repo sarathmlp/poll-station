@@ -2,28 +2,53 @@ from flask import Flask
 from flask import request
 from flask import render_template
 import os
+
+import pymongo
+from pymongo import MongoClient
+import pprint
+
 app = Flask(__name__)
 
-filename = 'data.txt'
-
-poll_data = {
+data = {
         'question' : 'Which web framework do you use?',
-        'fields'   : ['Flask', 'Django', 'web2py']
+        'fields'   : ['Flask', 'Django', 'web2py'],
+        'votes'   : {'Flask':0, 'Django':0, 'web2py':0}
         }
+
+# Set up the database
+client = MongoClient('mongodb://localhost:27017')
+dbnames = client.database_names()
+db = client.poll # this won't create db
+poll_data = db.poll_data # this create db
+
+if poll_data.count() == 0:
+    poll_data.insert_one(data)
+    print('created db')
+else:
+    print('db already exists')
 
 @app.route('/')
 def root():
-    return render_template('poll.html', data=poll_data)
+    p_data = poll_data.find_one()
+    return render_template('poll.html', data=p_data)
 
 @app.route('/poll', methods=['POST'])
 def poll():
+    p_data = poll_data.find_one()
     vote = request.form['field']
+    vote_count = p_data['votes'][vote]
+    vote_count += 1
+    poll_data.update_one(
+            {'question' : 'Which web framework do you use?'},
+            {'$set': {'votes.' + vote : vote_count }}
+        )
+    return render_template('thankyou.html', data=p_data)
 
-    out = open(filename, 'a')
-    out.write(vote + '\n')
-    out.close()
-
-    return render_template('thankyou.html', data=poll_data)
+@app.route('/result')
+def result():
+    p_data = poll_data.find_one()
+    vote = p_data['votes']
+    return render_template('result.html', data=p_data, votes=vote)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
