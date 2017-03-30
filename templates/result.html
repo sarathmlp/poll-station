@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> {{ data.question }} </title>
+    </head>
+    <body>
+        <h1> Votes for {{ data.question }} </h1>
+        <ul>
+            {% for v in votes %}
+            <li> {{ v }} :  {{ votes[v] }} </li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
