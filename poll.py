@@ -18,8 +18,8 @@ data = {
 # Set up the database
 client = MongoClient('mongodb://localhost:27017')
 dbnames = client.database_names()
-db = client.poll # this won't create db
-poll_data = db.poll_data # this create db
+db = client.poll # get the database
+poll_data = db.poll_data # get the collection
 
 if poll_data.count() == 0:
     poll_data.insert_one(data)
@@ -34,7 +34,7 @@ def root():
 
 @app.route('/poll', methods=['POST'])
 def poll():
-    p_data = poll_data.find_one()
+    p_data = poll_data.find_one() # get the document
     vote = request.form['field']
     vote_count = p_data['votes'][vote]
     vote_count += 1
