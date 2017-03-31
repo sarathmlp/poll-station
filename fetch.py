@@ -1,6 +1,5 @@
 import urllib.request
 from bs4 import BeautifulSoup
-from itertools import cycle
 
 resp = urllib.request.urlopen('https://en.wikipedia.org/wiki/Mobile_telephone_numbering_in_India')
 html = resp.read()
@@ -41,9 +40,9 @@ def main():
                 if data:
                     make_dict(data)
 
-    print (result)
-    #number = int(input('Enter phone number: '))
-    #phone_check(number)
+    #print (result)
+    number = int(input('Enter phone number: '))
+    phone_check(number)
 
 
 def make_dict(data):
