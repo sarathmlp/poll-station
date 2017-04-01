@@ -30,6 +30,7 @@ else:
     print('db already exists')
 
 @app.route('/')
+@app.route('/root')
 def root():
     p_data = poll_data.find_one()
     return render_template('poll.html', data=p_data)
@@ -54,7 +55,7 @@ def result():
 
 @app.route('/test')
 def test():
-    return redirect(url_for('result'))
+    return redirect(url_for('root'))
 
 if __name__ == "__main__":
     app.run(debug=True)
