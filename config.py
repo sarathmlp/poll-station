@@ -1,2 +1,8 @@
+# Configurations for app
+
+# Prevent Cross-site request forgery
 WTF_CSRF_ENABLED = True
-SECRET_KEY = 'highly-secret-key'
+SECRET_KEY = 'classified'
+
+# App run mode
+DEBUG = True

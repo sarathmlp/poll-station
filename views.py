@@ -3,45 +3,46 @@ from flask import render_template
 from flask import redirect
 from flask import url_for
 from __init__ import app
-from __init__ import db
-from __init__ import data
+from __init__ import poll_data
+from __init__ import ques
+import pprint
 
-# Get the collection
-poll_data = db.poll_data
 
-if poll_data.count() == 0:
-    poll_data.insert_one(data)
-    print('created db')
-else:
-    print('db already exists')
+# ---------- Begin the App ----------------- #
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('500.html'), 500
+
 
 @app.route('/')
 @app.route('/root')
 def root():
-    p_data = poll_data.find_one()
+    p_data = ques.qlist[0]
     return render_template('poll.html', data=p_data)
 
 @app.route('/poll', methods=['POST'])
 def poll():
-    p_data = poll_data.find_one() # get the document
     vote = request.form['field']
-    vote_count = p_data['votes'][vote]
-    vote_count += 1
+    question = ques.get_question(vote)
+    if question is not None:
+        question['votes'][vote] += 1
+
     poll_data.update_one(
-            {'question' : 'Which web framework do you use?'},
-            {'$set': {'votes.' + vote : vote_count }}
+            {'index' : question['index']},
+            {'$set': {'votes.' + vote : question['votes'][vote]}}
         )
-    return render_template('thankyou.html', data=p_data)
+    return render_template('thankyou.html', data=question)
 
 @app.route('/result')
 def result():
-    p_data = poll_data.find_one()
+    p_data = poll_data.find_one({'index': 1})
     vote = p_data['votes']
     return render_template('result.html', data=p_data, votes=vote)
 
 @app.route('/test')
 def test():
     return redirect(url_for('root'))
-
-if __name__ == "__main__":
-    app.run(debug=True)
