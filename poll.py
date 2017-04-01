@@ -1,6 +1,8 @@
 from flask import Flask
 from flask import request
 from flask import render_template
+from flask import redirect
+from flask import url_for
 import os
 
 import pymongo
@@ -49,6 +51,10 @@ def result():
     p_data = poll_data.find_one()
     vote = p_data['votes']
     return render_template('result.html', data=p_data, votes=vote)
+
+@app.route('/test')
+def test():
+    return redirect(url_for('result'))
 
 if __name__ == "__main__":
     app.run(debug=True)

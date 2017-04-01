@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title> {{ data.question }} </title>
-    </head>
-    <body>
-        <h1> Votes for {{ data.question }} </h1>
-        <ul>
-            {% for v in votes %}
-            <li> {{ v }} :  {{ votes[v] }} </li>
-            {% endfor %}
-        </ul>
-    </body>
-</html>
+{% extends 'base.html' %}
+{% block title %} {{data.question}} {% endblock %}
+
+{% block content %}
+<h1> Votes for {{ data.question }} </h1>
+<ul>
+    {% for v in votes %}
+    <li> {{ v }} :  {{ votes[v] }} </li>
+    {% endfor %}
+</ul>
+{% endblock %}
