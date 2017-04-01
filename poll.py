@@ -1,27 +1,13 @@
-from flask import Flask
 from flask import request
 from flask import render_template
 from flask import redirect
 from flask import url_for
-import os
+from __init__ import app
+from __init__ import db
+from __init__ import data
 
-import pymongo
-from pymongo import MongoClient
-import pprint
-
-app = Flask(__name__)
-
-data = {
-        'question' : 'Which web framework do you use?',
-        'fields'   : ['Flask', 'Django', 'web2py'],
-        'votes'   : {'Flask':0, 'Django':0, 'web2py':0}
-        }
-
-# Set up the database
-client = MongoClient('mongodb://localhost:27017')
-dbnames = client.database_names()
-db = client.poll # get the database
-poll_data = db.poll_data # get the collection
+# Get the collection
+poll_data = db.poll_data
 
 if poll_data.count() == 0:
     poll_data.insert_one(data)
