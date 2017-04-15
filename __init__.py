@@ -5,7 +5,6 @@ from flask import Flask
 import pymongo
 from pymongo import MongoClient
 import pprint
-from models import Question
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -33,7 +32,3 @@ if poll_data.count() == 0:
     qlist = ast.literal_eval(data)
     result = poll_data.insert_many(qlist)
     app.logger.debug(result.inserted_ids)
-
-ques = Question()
-for q in poll_data.find():
-    ques.qlist.append(q)

@@ -6,3 +6,6 @@ SECRET_KEY = 'classified'
 
 # App run mode
 DEBUG = True
+
+# Pagination
+QUES_PER_PAGE = 1
